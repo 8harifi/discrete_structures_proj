@@ -2,6 +2,15 @@ import json
 import icecream
 
 
+def check_hamilton_availability(_graph):
+    for v in _graph:
+        pass
+
+
+
+    return True
+
+
 def shortestpath_func(_ct1, _ct2, _graph, _cities):
     def choose_shortest_option(_options: [(str, str, int)]) -> (str, str, int):
         """
@@ -14,21 +23,25 @@ def shortestpath_func(_ct1, _ct2, _graph, _cities):
         """
         best_option = _options[0]  # the default value will be the first option
         for opt in _options:  # inside this loop, we update the res if it was not the cheapest option
-            print(f'opt: {opt}')
-            print(f'best option: {best_option}')
             if opt[2] < best_option[2]:
                 best_option = opt
 
         _options.remove(best_option)
-        _options += [(best_option[1], x, _cities[x] + best_option[2]) for x in _graph[best_option[1]]]
+        _options += [(best_option[0], x, _cities[int(x)]['dist'] + best_option[2]) for x in _graph[best_option[0]]]
+        # for x in _graph[best_option[0]]:
+        #     print("______________________________")
+        #     print(best_option[1])
+        #     print(x)
+        #     print(_cities)
+        #     # print(_cities[x] + best_option[2])
+        #     print("______________________________")
+        #     _options.append((best_option[1], x, _cities[int(x)]['dist'] + best_option[2]))
 
         return best_option, _options
 
     options = [(_ct1, x, _cities[int(x)]['dist']) for x in _graph[_ct1]]
-    print("+=============")
-    print(options)
     best_opt, options = choose_shortest_option(options)
-    while best_opt[1] != _ct1:
+    while best_opt[0] != _ct1:
         best_opt, options = choose_shortest_option(options)
 
 
@@ -125,7 +138,7 @@ for i in range(num_of_paths):
         p = {
             "src": inp[0],
             "dst": inp[1],
-            "dist": inp[3]
+            "dist": int(inp[3])
         }
         paths.append(p)
         graph[inp[0]].append(inp[1])
@@ -133,12 +146,12 @@ for i in range(num_of_paths):
         p1 = {
             "src": inp[0],
             "dst": inp[1],
-            "dist": inp[3]
+            "dist": int(inp[3])
         }
         p2 = {
             "src": inp[1],
             "dst": inp[0],
-            "dist": inp[3]
+            "dist": int(inp[3])
         }
         paths.append(p1)
         paths.append(p2)
@@ -158,8 +171,8 @@ for i in range(num_of_commands):
         ct1, ct2 = input().split()
         print(shortestpath_func(ct1, ct2, numeric_path_to_string(graph, cities), paths))
     elif cmd == "HAMILTON":
-        pass
-    elif cmd == "TOUR":
-        pass
+        is_hamilton_available = check_hamilton_availability(graph)
+        if is_hamilton_available:
+            pass
     elif cmd == "ECONOMIC_TOUR":
         pass
