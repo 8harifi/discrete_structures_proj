@@ -1,178 +1,172 @@
-import json
-import icecream
+from icecream import ic
 
 
-def check_hamilton_availability(_graph):
-    for v in _graph:
-        pass
+def check_hamilton_availability():
+    pass
 
 
-
-    return True
-
-
-def shortestpath_func(_ct1, _ct2, _graph, _cities):
-    def choose_shortest_option(_options: [(str, str, int)]) -> (str, str, int):
-        """
-        options_example = [
-            ('city1', 'city2', 200),
-            ('city2', 'city4', 400),
-            ...
-            (src, dst, cost)
-        ]
-        """
-        best_option = _options[0]  # the default value will be the first option
-        for opt in _options:  # inside this loop, we update the res if it was not the cheapest option
-            if opt[2] < best_option[2]:
-                best_option = opt
-
-        _options.remove(best_option)
-        _options += [(best_option[0], x, _cities[int(x)]['dist'] + best_option[2]) for x in _graph[best_option[0]]]
-        # for x in _graph[best_option[0]]:
-        #     print("______________________________")
-        #     print(best_option[1])
-        #     print(x)
-        #     print(_cities)
-        #     # print(_cities[x] + best_option[2])
-        #     print("______________________________")
-        #     _options.append((best_option[1], x, _cities[int(x)]['dist'] + best_option[2]))
-
-        return best_option, _options
-
-    options = [(_ct1, x, _cities[int(x)]['dist']) for x in _graph[_ct1]]
-    best_opt, options = choose_shortest_option(options)
-    while best_opt[0] != _ct1:
-        best_opt, options = choose_shortest_option(options)
+def shortestpath_func():
+    pass
 
 
-def euler_func(_graph):
-    def is_eulerian_directed():
-        odd_in_degree_counter = 0
-        odd_out_degree_counter = 0
-        start_node_out = None
-        start_node_in = None
+def euler_func(_paths):
+    pass
 
-        out_degree_counter = {x: 0 for x in _graph}
-        in_degree_counter = {x: 0 for x in _graph}
 
-        for node in _graph:
-            out_degree_counter[node] = len(_graph[node])
-            for n in _graph[node]:
-                in_degree_counter[n] += 1
+def numofpath_func(_src, _dst, _paths):
+    numofpath = 0
+    cur_vertex = _src
+    cur_path = [_src]
+    visited = [_src]
 
-        for node in _graph:
-            in_degree = in_degree_counter[node]
-            out_degree = out_degree_counter[node]
+    def goto(vertex):
+        nonlocal cur_vertex
+        nonlocal cur_path
+        nonlocal visited
 
-            if in_degree - out_degree > 1 or out_degree - in_degree > 1:
-                return False, None
+        cur_path.append(vertex)
+        visited.append(vertex)
+        cur_vertex = cur_path[-1]
 
-            if in_degree - out_degree == 1:
-                odd_out_degree_counter += 1
-                start_node_out = node
+    def backtrack():
+        nonlocal cur_vertex
+        nonlocal cur_path
 
-            if out_degree - in_degree == 1:
-                odd_in_degree_counter += 1
-                start_node_in = node
+        cur_path.pop(-1)
+        cur_vertex = cur_path[-1]
 
-        if odd_out_degree_counter == 0 and odd_in_degree_counter == 0:
-            return True, list(graph.keys())[0]
-        elif odd_out_degree_counter == 1 and odd_in_degree_counter == 1:
-            return True, start_node_out
+    while True:
+        # ic(cur_path)
+        choices = [x for x in _paths[cur_vertex].keys() if x not in visited]
+        if not choices and cur_vertex == _src:
+            break
+        elif not choices and cur_vertex == _dst:
+            numofpath += 1
+            backtrack()
+        elif not choices:
+            backtrack()
         else:
-            return False, None
+            goto(choices[0])
+
+    return numofpath
+    # found_paths = []
+    # cur_vertex = _src
+    # # cur_choices = list(_paths[_src].keys())
+    # cur_path = [_src]
+    # visited = [_src]
+    #
+    # def explore() -> bool:
+    #     nonlocal cur_vertex
+    #     # nonlocal cur_choices
+    #     nonlocal cur_path
+    #     nonlocal visited
+    #
+    #     is_deadend = True
+    #     for cur_choice in _paths[_src].keys():
+    #         if cur_choice not in visited:
+    #             cur_vertex = cur_choice
+    #             is_deadend = False
+    #             break
+    #     if is_deadend:
+    #         return False
+    #     visited.append(cur_vertex)
+    #     cur_path.append(cur_vertex)
+    #     cur_choices = list(_paths[cur_vertex].keys())
+    #     return True
+    #
+    # def backtrack():
+    #     nonlocal cur_vertex
+    #     # nonlocal cur_choices
+    #     nonlocal cur_path
+    #
+    #     cur_path.pop(-1)
+    #     cur_vertex = cur_path[-1]
+    #     cur_choices = list(_paths[cur_vertex].keys())
+    #
+    # first_time = True
+    # while cur_vertex != _src or first_time:
+    #     first_time = False
+    #     print(1)
+    #     e = explore()
+    #     while not e:
+    #         backtrack()
+    #         e = explore()
+    #
+    #     if cur_vertex == _dst and cur_path not in found_paths:
+    #         found_paths.append(cur_path)
+    #     if cur_vertex == _src and not e:
+    #         break
+    #
+    # return found_paths
 
 
-def numofpath_func(_graph, start, end):
-    simple_paths = []
-    visited = set()
+def main():
+    cities_raw = input().split()
+    cities = {}  # list of cities along with their prices
+    paths = {}  # list of cities along with all the paths attached to them
+    relations = {}  # list of "_id"s along with their names (change id to city name)
+    _id = 1
+    for index, raw_city in enumerate(cities_raw):
+        if index % 2 == 0:
+            cities[raw_city] = int(cities_raw[index + 1])
+            relations[_id] = raw_city
+            _id += 1
 
-    def dfs(current, path):
-        visited.add(current)
-        path.append(current)
+    ic(cities)
+    ic(relations)
 
-        if current == end:
-            simple_paths.append(path[:])  # Found a path from start to end
+    num_of_paths = int(input())
+    # graph = {str(i + 1): [] for i in range(len(cities))}
+    for i in range(num_of_paths):
+        inp = input().split()
+        if inp[2] == '0':
+            src = relations[int(inp[0])]
+            dst = relations[int(inp[1])]
+            if src not in paths:
+                paths[src] = {}
+            paths[src][dst] = int(inp[3])
         else:
-            for neighbor in _graph[current]:
-                if neighbor not in visited:
-                    dfs(neighbor, path)
+            src = relations[int(inp[0])]
+            dst = relations[int(inp[1])]
+            if src not in paths:
+                paths[src] = {}
+            paths[src][dst] = int(inp[3])
 
-        # Backtrack
-        visited.remove(current)
-        path.pop()
+            src = relations[int(inp[1])]
+            dst = relations[int(inp[0])]
+            if src not in paths:
+                paths[src] = {}
+            paths[src][dst] = int(inp[3])
 
-    dfs(start, [])
+    ic(paths)
 
-    return simple_paths
-
-
-def numeric_path_to_string(_graph, _cities):
-    new_graph = {}
-    for c in _cities:
-        new_graph[c] = _graph[str(_cities[c]['id'])]
-
-    return new_graph
-
-
-cities_raw = input().split()
-cities = {}
-_id = 1
-for index, raw_city in enumerate(cities_raw):
-    if index % 2 == 0:
-        cities[raw_city] = {
-            "name": raw_city,
-            "price": cities_raw[index + 1],
-            "id": _id
-        }
-        _id += 1
-
-print(cities)
-
-num_of_paths = int(input())
-paths = []
-graph = {str(i + 1): [] for i in range(len(cities))}
-for i in range(num_of_paths):
-    inp = input().split()
-    if inp[2] == '0':
-        p = {
-            "src": inp[0],
-            "dst": inp[1],
-            "dist": int(inp[3])
-        }
-        paths.append(p)
-        graph[inp[0]].append(inp[1])
-    else:
-        p1 = {
-            "src": inp[0],
-            "dst": inp[1],
-            "dist": int(inp[3])
-        }
-        p2 = {
-            "src": inp[1],
-            "dst": inp[0],
-            "dist": int(inp[3])
-        }
-        paths.append(p1)
-        paths.append(p2)
-        graph[inp[0]].append(inp[1])
-        graph[inp[1]].append(inp[0])
-
-num_of_commands = int(input())
-for i in range(num_of_commands):
-    cmd = input()
-    if cmd == "NUMOFPATH":
-        c1, c2 = input().split()
-        numofpath = len(numofpath_func(graph, c1, c2))
-        print(numofpath)
-    elif cmd == "EULER":
-        print(euler_func(graph))
-    elif cmd == "SHORTESTPATH":
-        ct1, ct2 = input().split()
-        print(shortestpath_func(ct1, ct2, numeric_path_to_string(graph, cities), paths))
-    elif cmd == "HAMILTON":
-        is_hamilton_available = check_hamilton_availability(graph)
-        if is_hamilton_available:
+    num_of_commands = int(input())
+    for i in range(num_of_commands):
+        cmd = input()
+        if cmd == "NUMOFPATH":
+            c1, c2 = input().split()
+            print(
+                numofpath_func(
+                    relations[int(c1)],
+                    relations[int(c2)],
+                    paths
+                )
+            )
+            # use numofpath_func here
+        elif cmd == "EULER":
             pass
-    elif cmd == "ECONOMIC_TOUR":
-        pass
+            # use euler_func here
+        elif cmd == "SHORTESTPATH":
+            ct1, ct2 = input().split()
+            # use shortestpath_func here
+        elif cmd == "HAMILTON":
+            pass
+            # use check_hamilton_availability here
+        elif cmd == "TOUR":
+            pass
+        elif cmd == "ECONOMIC_TOUR":
+            pass
+
+
+if __name__ == "__main__":
+    main()
