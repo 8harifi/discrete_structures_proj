@@ -38,10 +38,11 @@ def numofpath_func(_src, _dst, _paths):
     while True:
         # ic(cur_path)
         choices = [x for x in _paths[cur_vertex].keys() if x not in visited]
+        if cur_vertex == _dst:
+            numofpath += 1
         if not choices and cur_vertex == _src:
             break
         elif not choices and cur_vertex == _dst:
-            numofpath += 1
             backtrack()
         elif not choices:
             backtrack()
