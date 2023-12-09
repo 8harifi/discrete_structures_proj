@@ -9,15 +9,52 @@ def shortestpath_func():
     pass
 
 
-def euler_func(_paths):
-    pass
+# def euler_func(_paths):
+#     def goto(vertex):
+#         nonlocal cur_vertex
+#         nonlocal cur_path
+#         nonlocal visited
+#
+#         cur_path.append(vertex)
+#         visited.append(vertex)
+#         cur_vertex = cur_path[-1]
+#
+#     def backtrack():
+#         nonlocal cur_vertex
+#         nonlocal cur_path
+#
+#         cur_path.pop(-1)
+#         cur_vertex = cur_path[-1]
+#
+#     # numofpath = 0
+#     for _src in _paths:
+#     cur_vertex = _src
+#     cur_path = [_src]
+#     visited = [_src]
+#
+#     while True:
+#         # ic(cur_path)
+#         choices = [x for x in _paths[cur_vertex].keys() if x not in visited]
+#         if cur_vertex == _dst:
+#             numofpath += 1
+#         if not choices and cur_vertex == _src:
+#             break
+#         elif not choices and cur_vertex == _dst:
+#             backtrack()
+#         elif not choices:
+#             backtrack()
+#         else:
+#             goto(choices[0])
+#
+#     return numofpath
 
 
 def numofpath_func(_src, _dst, _paths):
-    numofpath = 0
+    # numofpath = 0
+    found_paths = []
     cur_vertex = _src
     cur_path = [_src]
-    visited = [_src]
+    visited = []
 
     def goto(vertex):
         nonlocal cur_vertex
@@ -25,7 +62,7 @@ def numofpath_func(_src, _dst, _paths):
         nonlocal visited
 
         cur_path.append(vertex)
-        visited.append(vertex)
+        visited.append({cur_vertex, vertex})
         cur_vertex = cur_path[-1]
 
     def backtrack():
@@ -36,10 +73,11 @@ def numofpath_func(_src, _dst, _paths):
         cur_vertex = cur_path[-1]
 
     while True:
-        # ic(cur_path)
-        choices = [x for x in _paths[cur_vertex].keys() if x not in visited]
-        if cur_vertex == _dst:
-            numofpath += 1
+        choices = [x for x in _paths[cur_vertex].keys() if {cur_vertex, x} not in visited]
+        if cur_vertex == _dst and cur_path not in found_paths:
+            # numofpath += 1
+            found_paths.append([x for x in cur_path])
+            backtrack()
         if not choices and cur_vertex == _src:
             break
         elif not choices and cur_vertex == _dst:
@@ -49,7 +87,10 @@ def numofpath_func(_src, _dst, _paths):
         else:
             goto(choices[0])
 
-    return numofpath
+    # ic(numofpath)
+    # return numofpath
+    ic(found_paths)
+    return len(found_paths)
 
 
 def main():
@@ -104,7 +145,16 @@ def main():
                     paths
                 )
             )
-            # use numofpath_func here
+            # paths = {
+            #     'Isfahan': {'Tehran': 200, 'Yazd': 500},
+            #     'Kerman': {'Yazd': 300},
+            #     'Tehran': {'Isfahan': 200, 'Yazd': 100},
+            #     'Yazd': {'Isfahan': 500, 'Kerman': 300, 'Tehran': 100}
+            # }
+            # src = "Kerman"
+            # dst = "Isfahan"
+            # res = numofpath_func(src, dst, paths)
+            # print(res)
         elif cmd == "EULER":
             pass
             # use euler_func here
