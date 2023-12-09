@@ -50,55 +50,6 @@ def numofpath_func(_src, _dst, _paths):
             goto(choices[0])
 
     return numofpath
-    # found_paths = []
-    # cur_vertex = _src
-    # # cur_choices = list(_paths[_src].keys())
-    # cur_path = [_src]
-    # visited = [_src]
-    #
-    # def explore() -> bool:
-    #     nonlocal cur_vertex
-    #     # nonlocal cur_choices
-    #     nonlocal cur_path
-    #     nonlocal visited
-    #
-    #     is_deadend = True
-    #     for cur_choice in _paths[_src].keys():
-    #         if cur_choice not in visited:
-    #             cur_vertex = cur_choice
-    #             is_deadend = False
-    #             break
-    #     if is_deadend:
-    #         return False
-    #     visited.append(cur_vertex)
-    #     cur_path.append(cur_vertex)
-    #     cur_choices = list(_paths[cur_vertex].keys())
-    #     return True
-    #
-    # def backtrack():
-    #     nonlocal cur_vertex
-    #     # nonlocal cur_choices
-    #     nonlocal cur_path
-    #
-    #     cur_path.pop(-1)
-    #     cur_vertex = cur_path[-1]
-    #     cur_choices = list(_paths[cur_vertex].keys())
-    #
-    # first_time = True
-    # while cur_vertex != _src or first_time:
-    #     first_time = False
-    #     print(1)
-    #     e = explore()
-    #     while not e:
-    #         backtrack()
-    #         e = explore()
-    #
-    #     if cur_vertex == _dst and cur_path not in found_paths:
-    #         found_paths.append(cur_path)
-    #     if cur_vertex == _src and not e:
-    #         break
-    #
-    # return found_paths
 
 
 def main():
