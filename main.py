@@ -5,8 +5,38 @@ def check_hamilton_availability():
     pass
 
 
-def shortestpath_func():
-    pass
+def shortestpath_func(_src: str, _dst: str, _paths: {dict}):
+    def goto(p: str):
+        """
+        check if the last parameter of the given path is the dst
+        if yes: return True
+        if no: remove that path from cur_choices and add new available paths AND RETURN FALSE
+        also avoid that paths that lead to a already-visited vertex
+        """
+        nonlocal cur_choices
+
+        if p.split()[-1] == _dst:
+            return p, cur_choices[p]
+        cur_choices = cur_choices | {
+            f"{p} {x}": cur_choices[p] + _paths[p.split()[-1]][x] for x in list(_paths[p.split()[-1]].keys()) if
+            x not in p.split()
+        }
+        cur_choices.pop(p)
+        # ic(cur_choices)
+        return None, None
+
+    cur_choices = {f"{_src} {x}": _paths[_src][x] for x in list(_paths[_src].keys())}
+    # ic(cur_choices)
+    # cur_position = _src
+    while True:
+        cheapest = list(cur_choices.keys())[0]
+        for ch in cur_choices:
+            if cur_choices[ch] < cur_choices[cheapest]:
+                cheapest = ch
+        found_path, weight = goto(cheapest)
+        if found_path:
+            # ic(found_path)
+            return found_path, weight
 
 
 def euler_func(_paths):
@@ -37,7 +67,7 @@ def euler_func(_paths):
             if {x, y} not in all_edges:
                 all_edges.append({x, y})
 
-    ic(all_edges)
+    # ic(all_edges)
 
     found_path = []
     for _src in _paths:
@@ -46,8 +76,8 @@ def euler_func(_paths):
         visited = []
 
         while True:
-            ic(cur_path)
-            ic(visited)
+            # ic(cur_path)
+            # ic(visited)
             # ic([x for x in all_edges if x not in cur_path])
             choices = [x for x in _paths[cur_vertex].keys() if {cur_vertex, x} not in visited]
             if [x for x in all_edges if x not in cur_path]:  # no path/circuit found yet
@@ -65,10 +95,14 @@ def euler_func(_paths):
                     found_path = cur_path
                     break
 
+    # ic(found_path)
     if found_path:
-        return found_path
+        for v in found_path[0]:
+            if v not in found_path[1] and v in found_path[-1]:
+                return True, found_path
+        return False, found_path
     else:
-        return None
+        return False, None
 
 
 def numofpath_func(_src, _dst, _paths):
@@ -110,7 +144,7 @@ def numofpath_func(_src, _dst, _paths):
 
     # ic(numofpath)
     # return numofpath
-    ic(found_paths)
+    # ic(found_paths)
     return len(found_paths)
 
 
@@ -128,6 +162,7 @@ def main():
 
     ic(cities)
     ic(relations)
+    rev_relations = {relations[x]: x for x in relations}
 
     num_of_paths = int(input())
     # graph = {str(i + 1): [] for i in range(len(cities))}
@@ -167,14 +202,32 @@ def main():
                 )
             )
         elif cmd == "EULER":
-            res = euler_func(paths)
-            # TODO: change res using relations (turn into numbers and then check if its a path or circuit)
+            is_circuit, res = euler_func(paths)
             if not res:
                 print("NO NO")
+            else:
+                starting_point = [v for v in res[0] if v not in res[1]][0]
+                p = [starting_point]
+                for index, e in enumerate(res):
+                    if index == 0:
+                        pass
+                    elif index == len(res) - 1:
+                        p += [x for x in e]
+                    else:
+                        p.append([x for x in e if x in res[index - 1]][0])
+                if is_circuit:
+                    print("YES YES")
+                    print("".join([str(rev_relations[x]) for x in p]))
+                    print("".join([str(rev_relations[x]) for x in p]))
+                else:
+                    print("YES NO")
+                    print(" ".join([str(rev_relations[x]) for x in p]))
 
         elif cmd == "SHORTESTPATH":
             ct1, ct2 = input().split()
-            # use shortestpath_func here
+            res, weight = shortestpath_func(ct1, ct2, paths)
+            print(weight)
+            print(" ".join([str(rev_relations[x]) for x in res.split()]))
         elif cmd == "HAMILTON":
             pass
             # use check_hamilton_availability here
