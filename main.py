@@ -47,12 +47,6 @@ def check_hamilton(_paths):
 
 def tour_func(_src: str, _paths: {dict}):
     def goto(p: str):
-        """
-        check if the last parameter of the given path is the dst
-        if yes: return True
-        if no: remove that path from cur_choices and add new available paths AND RETURN FALSE
-        also avoid that paths that lead to an already-visited vertex
-        """
         nonlocal cur_choices
 
         visited_cts_in_p = p.split()
@@ -87,7 +81,7 @@ def shortestpath_func(_src: str, _dst: str, _paths: {dict}):
         check if the last parameter of the given path is the dst
         if yes: return True
         if no: remove that path from cur_choices and add new available paths AND RETURN FALSE
-        also avoid that paths that lead to a already-visited vertex
+        also avoid that paths that lead to an already-visited vertex
         """
         nonlocal cur_choices
 
