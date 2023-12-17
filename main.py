@@ -269,6 +269,7 @@ def main():
     for i in range(num_of_commands):
         cmd = input()
         if cmd == "NUMOFPATH":
+            print("NUMOFPATH")
             c1, c2 = input().split()
             print(
                 numofpath_func(
@@ -278,6 +279,7 @@ def main():
                 )
             )
         elif cmd == "EULER":
+            print("EULER")
             is_circuit, res = euler_func(paths)
             if not res:
                 print("NO NO")
@@ -300,21 +302,24 @@ def main():
                     print(" ".join([str(rev_relations[x]) for x in p]))
 
         elif cmd == "SHORTESTPATH":
+            print("SHORTESTPATH")
             ct1, ct2 = input().split()
             res, weight = shortestpath_func(ct1, ct2, paths)
             print(weight)
             print(" ".join([str(rev_relations[x]) for x in res.split()]))
         elif cmd == "HAMILTON":
+            print("HAMILTON")
             has_path, has_circuit = check_hamilton(paths)
             res = f"{'Yes' if has_path else 'No'} {'Yes' if has_circuit else 'No'}"
             print(res)
         elif cmd == "TOUR":
+            print("TOUR")
             ct = relations[int(input())]
             res, weight = tour_func(ct, paths)
             print(weight)
             print(" ".join([str(rev_relations[x]) for x in res.split()]))
         elif cmd == "ECONOMIC_TOUR":
-            pass
+            print("ECONOMIC_TOUR")
 
 
 if __name__ == "__main__":
