@@ -7,7 +7,8 @@ from main import (
     check_hamilton,
     shortestpath_func,
     euler_func,
-    tour_func
+    tour_func,
+    economic_tour_func
 )
 
 
@@ -109,6 +110,18 @@ class TestCalculator(unittest.TestCase):
         res, weight = tour_func("Yazd", paths)
         self.assertEqual(res, "Yazd Tehran Isfahan Tehran Yazd Kerman Yazd")
         self.assertEqual(weight, 1200)
+
+    def test_economic_tour_1(self):
+        paths = {
+            'Kerman': {'Yazd': 300},
+            'Yazd': {'Kerman': 300, 'Tehran': 100, 'Isfahan': 500},
+            'Tehran': {'Yazd': 100, 'Isfahan': 200},
+            'Isfahan': {'Yazd': 500, 'Tehran': 200}
+        }
+        cities = {'Isfahan': 6, 'Kerman': 3, 'Tehran': 6, 'Yazd': 3}
+        res, weight = economic_tour_func(3, paths, cities)
+        self.assertEqual(res, "Kerman Yazd Tehran Yazd Kerman")
+        self.assertEqual(weight, (800, 12))
 
 
 if __name__ == "__main__":

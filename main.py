@@ -1,7 +1,40 @@
 from icecream import ic
 
 
-def check_hamilton(_paths):
+def economic_tour_func(_n: int, _paths: {str: dict}, _cities: {str: int}):
+    def goto(p: str):
+        """
+        check if the last parameter of the given path is the dst
+        if yes: return True
+        if no: remove that path from cur_choices and add new available paths AND RETURN FALSE
+        also avoid that paths that lead to an already-visited vertex
+        """
+        nonlocal cur_choices
+
+        if p.split()[-1] == _src and len(list(set(p.split()))) >= _n:
+            return p, cur_choices[p]
+        cur_choices = cur_choices | {
+            f"{p} {x}": (cur_choices[p][0] + _paths[p.split()[-1]][x], cur_choices[p][1] + float(_cities[x])) for x in list(_paths[p.split()[-1]].keys())
+        }
+        cur_choices.pop(p)
+        # ic(cur_choices)
+        return None, None
+
+    for _src in _paths:
+        cur_choices = {f"{_src} {x}": (_paths[_src][x], 0.0) for x in list(_paths[_src].keys())}
+        while True:
+            # ic(cur_choices)
+            cheapest = list(cur_choices.keys())[0]
+            for ch in cur_choices:
+                if cur_choices[ch] < cur_choices[cheapest]:
+                    cheapest = ch
+            found_path, weight = goto(cheapest)
+            if found_path:
+                # ic(found_path)
+                return found_path, weight
+
+
+def check_hamilton(_paths: {str: dict}):
     ret = {
         "has_path": False,
         "has_circuit": False
@@ -45,7 +78,7 @@ def check_hamilton(_paths):
                     return ret["has_path"], ret["has_circuit"]
 
 
-def tour_func(_src: str, _paths: {dict}):
+def tour_func(_src: str, _paths: {str: dict}):
     def goto(p: str):
         nonlocal cur_choices
 
@@ -75,7 +108,7 @@ def tour_func(_src: str, _paths: {dict}):
             return found_path, weight
 
 
-def shortestpath_func(_src: str, _dst: str, _paths: {dict}):
+def shortestpath_func(_src: str, _dst: str, _paths: {str: dict}):
     def goto(p: str):
         """
         check if the last parameter of the given path is the dst
@@ -109,7 +142,7 @@ def shortestpath_func(_src: str, _dst: str, _paths: {dict}):
             return found_path, weight
 
 
-def euler_func(_paths):
+def euler_func(_paths: {str: dict}):
     def goto(vertex):
         nonlocal cur_vertex
         nonlocal cur_path
@@ -175,7 +208,7 @@ def euler_func(_paths):
         return False, None
 
 
-def numofpath_func(_src, _dst, _paths):
+def numofpath_func(_src: str, _dst: str, _paths: {str: dict}):
     found_paths = []
     cur_vertex = _src
     cur_path = [_src]
@@ -314,6 +347,9 @@ def main():
             print(" ".join([str(rev_relations[x]) for x in res.split()]))
         elif cmd == "ECONOMIC_TOUR":
             print("ECONOMIC_TOUR")
+            res, weight = economic_tour_func(int(input()), paths, cities)
+            print(f"{weight[0]} {int(weight[1])}")
+            print(" ".join([str(rev_relations[x]) for x in res.split()]))
 
 
 if __name__ == "__main__":
