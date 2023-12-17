@@ -1,8 +1,84 @@
 from icecream import ic
 
 
-def check_hamilton_availability():
-    pass
+def check_hamilton(_paths):
+    ret = {
+        "has_path": False,
+        "has_circuit": False
+    }  # (hamilton_path, hamilton_circuit)
+
+    def goto(p: str):
+        nonlocal cur_choices
+
+        visited_cts_in_p = p.split()
+        all_cts = list(_paths.keys())
+        cur_choices += [
+            f"{p} {x}" for x in list(_paths[p.split()[-1]].keys()) if x not in p.split()
+        ]
+        cur_choices.remove(p)
+        # ic(cur_choices)
+        if p.split()[-1] == _src and set(all_cts) == set(visited_cts_in_p):
+            return "has_circuit"
+        elif set(all_cts) == set(visited_cts_in_p):
+            return "has_path"
+        return None
+
+    # ic(cur_choices)
+    # cur_position = _src
+    for _src in _paths:
+        cur_choices = [f"{_src} {x}" for x in list(_paths[_src].keys())]
+        while True:
+            if not cur_choices:
+                return ret["has_path"], ret["has_circuit"]
+            # ic(cur_choices)
+            # ic(ret)
+            cur_choice = cur_choices[0]
+            # for ch in cur_choices:
+            #     if cur_choices[ch] < cur_choices[cur_choice]:
+            #         cur_choice = ch
+            res = goto(cur_choice)
+            if res:
+                if res == "has_path":
+                    ret["has_path"] = True
+                elif res == "has_circuit":
+                    ret["has_circuit"] = True
+                    return ret["has_path"], ret["has_circuit"]
+
+
+def tour_func(_src: str, _paths: {dict}):
+    def goto(p: str):
+        """
+        check if the last parameter of the given path is the dst
+        if yes: return True
+        if no: remove that path from cur_choices and add new available paths AND RETURN FALSE
+        also avoid that paths that lead to an already-visited vertex
+        """
+        nonlocal cur_choices
+
+        visited_cts_in_p = p.split()
+        all_cts = list(_paths.keys())
+        if p.split()[-1] == _src and set(all_cts) == set(visited_cts_in_p):
+            return p, cur_choices[p]
+        cur_choices = cur_choices | {
+            f"{p} {x}": cur_choices[p] + _paths[p.split()[-1]][x] for x in list(_paths[p.split()[-1]].keys())
+        }
+        cur_choices.pop(p)
+        # ic(cur_choices)
+        return None, None
+
+    cur_choices = {f"{_src} {x}": _paths[_src][x] for x in list(_paths[_src].keys())}
+    # ic(cur_choices)
+    # cur_position = _src
+    while True:
+        # ic(cur_choices)
+        cheapest = list(cur_choices.keys())[0]
+        for ch in cur_choices:
+            if cur_choices[ch] < cur_choices[cheapest]:
+                cheapest = ch
+        found_path, weight = goto(cheapest)
+        if found_path:
+            # ic(found_path)
+            return found_path, weight
 
 
 def shortestpath_func(_src: str, _dst: str, _paths: {dict}):
@@ -229,10 +305,14 @@ def main():
             print(weight)
             print(" ".join([str(rev_relations[x]) for x in res.split()]))
         elif cmd == "HAMILTON":
-            pass
-            # use check_hamilton_availability here
+            has_path, has_circuit = check_hamilton(paths)
+            res = f"{'Yes' if has_path else 'No'} {'Yes' if has_circuit else 'No'}"
+            print(res)
         elif cmd == "TOUR":
-            pass
+            ct = relations[int(input())]
+            res, weight = tour_func(ct, paths)
+            print(weight)
+            print(" ".join([str(rev_relations[x]) for x in res.split()]))
         elif cmd == "ECONOMIC_TOUR":
             pass
 

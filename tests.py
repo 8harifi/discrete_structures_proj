@@ -4,9 +4,10 @@ from icecream import ic
 
 from main import (
     numofpath_func,
-    check_hamilton_availability,
+    check_hamilton,
     shortestpath_func,
-    euler_func
+    euler_func,
+    tour_func
 )
 
 
@@ -86,6 +87,28 @@ class TestCalculator(unittest.TestCase):
         res, weight = shortestpath_func("Yazd", "Tehran", paths)
         self.assertEqual(res, "Yazd Tehran")
         self.assertEqual(weight, 100)
+
+    def test_hamilton_1(self):
+        paths = {
+            'Kerman': {'Yazd': 300},
+            'Yazd': {'Kerman': 300, 'Tehran': 100, 'Isfahan': 500},
+            'Tehran': {'Yazd': 100, 'Isfahan': 200},
+            'Isfahan': {'Yazd': 500, 'Tehran': 200}
+        }
+        has_path, has_circuit = check_hamilton(paths)
+        self.assertEqual(has_path, True)
+        self.assertEqual(has_circuit, False)
+
+    def test_tour_1(self):
+        paths = {
+            'Kerman': {'Yazd': 300},
+            'Yazd': {'Kerman': 300, 'Tehran': 100, 'Isfahan': 500},
+            'Tehran': {'Yazd': 100, 'Isfahan': 200},
+            'Isfahan': {'Yazd': 500, 'Tehran': 200}
+        }
+        res, weight = tour_func("Yazd", paths)
+        self.assertEqual(res, "Yazd Tehran Isfahan Tehran Yazd Kerman Yazd")
+        self.assertEqual(weight, 1200)
 
 
 if __name__ == "__main__":
