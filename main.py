@@ -1,4 +1,4 @@
-from icecream import ic
+# from icecream import ic
 
 
 def economic_tour_func(_n: int, _paths: {str: dict}, _cities: {str: int}):
@@ -13,9 +13,10 @@ def economic_tour_func(_n: int, _paths: {str: dict}, _cities: {str: int}):
 
         if p.split()[-1] == _src and len(list(set(p.split()))) >= _n:
             return p, cur_choices[p]
-        cur_choices = cur_choices | {
+        dic = {
             f"{p} {x}": (cur_choices[p][0] + _paths[p.split()[-1]][x], cur_choices[p][1] + float(_cities[x])) for x in list(_paths[p.split()[-1]].keys())
         }
+        cur_choices = {**cur_choices, **dic}
         cur_choices.pop(p)
         # ic(cur_choices)
         return None, None
@@ -86,9 +87,10 @@ def tour_func(_src: str, _paths: {str: dict}):
         all_cts = list(_paths.keys())
         if p.split()[-1] == _src and set(all_cts) == set(visited_cts_in_p):
             return p, cur_choices[p]
-        cur_choices = cur_choices | {
+        dic = {
             f"{p} {x}": cur_choices[p] + _paths[p.split()[-1]][x] for x in list(_paths[p.split()[-1]].keys())
         }
+        cur_choices = {**cur_choices, **dic}
         cur_choices.pop(p)
         # ic(cur_choices)
         return None, None
@@ -120,10 +122,11 @@ def shortestpath_func(_src: str, _dst: str, _paths: {str: dict}):
 
         if p.split()[-1] == _dst:
             return p, cur_choices[p]
-        cur_choices = cur_choices | {
+        dic = {
             f"{p} {x}": cur_choices[p] + _paths[p.split()[-1]][x] for x in list(_paths[p.split()[-1]].keys()) if
             x not in p.split()
         }
+        cur_choices = {**cur_choices, **dic}
         cur_choices.pop(p)
         # ic(cur_choices)
         return None, None
@@ -263,8 +266,8 @@ def main():
             relations[_id] = raw_city
             _id += 1
 
-    ic(cities)
-    ic(relations)
+    # ic(cities)
+    # ic(relations)
     rev_relations = {relations[x]: x for x in relations}
 
     num_of_paths = int(input())
@@ -290,7 +293,7 @@ def main():
                 paths[src] = {}
             paths[src][dst] = int(inp[3])
 
-    ic(paths)
+    # ic(paths)
 
     num_of_commands = int(input())
     for i in range(num_of_commands):
