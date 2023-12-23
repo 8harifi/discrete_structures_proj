@@ -15,6 +15,20 @@ from main import (
 class TestCalculator(unittest.TestCase):
     def test_numofpath_1(self):
         paths = {
+            'A': {'B': 200, 'F': 100},
+            'B': {'A': 200, 'D': 200, 'E': 300},
+            'C': {'D': 200},
+            'D': {'B': 200, 'C': 200, 'E': 600},
+            'E': {'B': 300, 'D': 600},
+            'F': {'A': 100}
+        }
+        src = "F"
+        dst = "C"
+        res = numofpath_func(src, dst, paths)
+        self.assertEqual(res, 2)
+
+    def test_numofpath_2(self):
+        paths = {
             'Isfahan': {'Tehran': 200, 'Yazd': 500},
             'Kerman': {'Yazd': 300},
             'Tehran': {'Isfahan': 200, 'Yazd': 100},
@@ -25,7 +39,7 @@ class TestCalculator(unittest.TestCase):
         res = numofpath_func(src, dst, paths)
         self.assertEqual(res, 2)
 
-    def test_numofpath_2(self):
+    def test_numofpath_3(self):
         paths = {
             'Kerman': {'Yazd': 300},
             'Yazd': {'Kerman': 300, 'Tehran': 100, 'Isfahan': 500},
@@ -58,12 +72,14 @@ class TestCalculator(unittest.TestCase):
 
     def test_shortestpath_1(self):
         paths = {
-            'Kerman': {'Yazd': 300},
-            'Yazd': {'Kerman': 300, 'Tehran': 100, 'Isfahan': 500},
-            'Tehran': {'Yazd': 100, 'Isfahan': 200},
-            'Isfahan': {'Yazd': 500, 'Tehran': 200}
+            'A': {'B': 200, 'F': 100},
+            'B': {'A': 200, 'D': 200, 'E': 300},
+            'C': {'D': 200},
+            'D': {'B': 200, 'C': 200, 'E': 600},
+            'E': {'B': 300, 'D': 600},
+            'F': {'A': 100}
         }
-        res, weight = shortestpath_func("Kerman", "Isfahan", paths)
+        res, weight = shortestpath_func("E", "C", paths)
         self.assertEqual(res, "Kerman Yazd Tehran Isfahan")
         self.assertEqual(weight, 300 + 100 + 200)
 
@@ -74,11 +90,22 @@ class TestCalculator(unittest.TestCase):
             'Tehran': {'Yazd': 100, 'Isfahan': 200},
             'Isfahan': {'Yazd': 500, 'Tehran': 200}
         }
+        res, weight = shortestpath_func("Kerman", "Isfahan", paths)
+        self.assertEqual(res, "Kerman Yazd Tehran Isfahan")
+        self.assertEqual(weight, 300 + 100 + 200)
+
+    def test_shortestpath_3(self):
+        paths = {
+            'Kerman': {'Yazd': 300},
+            'Yazd': {'Kerman': 300, 'Tehran': 100, 'Isfahan': 500},
+            'Tehran': {'Yazd': 100, 'Isfahan': 200},
+            'Isfahan': {'Yazd': 500, 'Tehran': 200}
+        }
         res, weight = shortestpath_func("Yazd", "Isfahan", paths)
         self.assertEqual(res, "Yazd Tehran Isfahan")
         self.assertEqual(weight, 100 + 200)
 
-    def test_shortestpath_3(self):
+    def test_shortestpath_4(self):
         paths = {
             'Kerman': {'Yazd': 300},
             'Yazd': {'Kerman': 300, 'Tehran': 100, 'Isfahan': 500},

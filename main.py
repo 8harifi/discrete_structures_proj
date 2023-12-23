@@ -1,4 +1,4 @@
-# from icecream import ic
+from icecream import ic
 
 
 def economic_tour_func(_n: int, _paths: {str: dict}, _cities: {str: int}):
@@ -57,7 +57,6 @@ def check_hamilton(_paths: {str: dict}):
             return "has_path"
         return None
 
-    # ic(cur_choices)
     # cur_position = _src
     for _src in _paths:
         cur_choices = [f"{_src} {x}" for x in list(_paths[_src].keys())]
@@ -111,6 +110,7 @@ def tour_func(_src: str, _paths: {str: dict}):
 
 
 def shortestpath_func(_src: str, _dst: str, _paths: {str: dict}):
+    ic(_src, _dst, _paths)
     def goto(p: str):
         """
         check if the last parameter of the given path is the dst
@@ -196,7 +196,7 @@ def euler_func(_paths: {str: dict}):
                     goto(choices[0])
             else:  # found a path/circuit
                 if cur_vertex == _src:
-                    return cur_path
+                    return True, cur_path
                 else:
                     found_path = cur_path
                     break
@@ -213,44 +213,25 @@ def euler_func(_paths: {str: dict}):
 
 def numofpath_func(_src: str, _dst: str, _paths: {str: dict}):
     found_paths = []
-    cur_vertex = _src
-    cur_path = [_src]
-    visited = []
+    stack = [(_src, [_src])]  # a list of tuples like -> (current_vertex, path)
 
-    def goto(vertex):
-        nonlocal cur_vertex
-        nonlocal cur_path
-        nonlocal visited
+    while stack:
+        cur_vertex, cur_path = stack.pop()
 
-        cur_path.append(vertex)
-        visited.append({cur_vertex, vertex})
-        cur_vertex = cur_path[-1]
+        # found a path
+        if cur_vertex == _dst:
+            found_paths.append(cur_path)
+            continue
 
-    def backtrack():
-        nonlocal cur_vertex
-        nonlocal cur_path
+        # skip
+        if cur_vertex in cur_path[:-1]:
+            continue
 
-        cur_path.pop(-1)
-        cur_vertex = cur_path[-1]
+        # explore from cur_vertex
+        for neighbor, _ in _paths[cur_vertex].items():
+            if neighbor not in cur_path:
+                stack.append((neighbor, cur_path + [neighbor]))
 
-    while True:
-        choices = [x for x in _paths[cur_vertex].keys() if {cur_vertex, x} not in visited]
-        if cur_vertex == _dst and cur_path not in found_paths:
-            # numofpath += 1
-            found_paths.append([x for x in cur_path])
-            backtrack()
-        if not choices and cur_vertex == _src:
-            break
-        elif not choices and cur_vertex == _dst:
-            backtrack()
-        elif not choices:
-            backtrack()
-        else:
-            goto(choices[0])
-
-    # ic(numofpath)
-    # return numofpath
-    # ic(found_paths)
     return len(found_paths)
 
 
@@ -266,8 +247,8 @@ def main():
             relations[_id] = raw_city
             _id += 1
 
-    # ic(cities)
-    # ic(relations)
+    ic(cities)
+    ic(relations)
     rev_relations = {relations[x]: x for x in relations}
 
     num_of_paths = int(input())
@@ -293,7 +274,7 @@ def main():
                 paths[src] = {}
             paths[src][dst] = int(inp[3])
 
-    # ic(paths)
+    ic(paths)
 
     num_of_commands = int(input())
     for i in range(num_of_commands):
@@ -325,8 +306,8 @@ def main():
                         p.append([x for x in e if x in res[index - 1]][0])
                 if is_circuit:
                     print("YES YES")
-                    print("".join([str(rev_relations[x]) for x in p]))
-                    print("".join([str(rev_relations[x]) for x in p]))
+                    print(" ".join([str(rev_relations[x]) for x in p]))
+                    print(" ".join([str(rev_relations[x]) for x in p]))
                 else:
                     print("YES NO")
                     print(" ".join([str(rev_relations[x]) for x in p]))
