@@ -14,7 +14,8 @@ def economic_tour_func(_n: int, _paths: {str: dict}, _cities: {str: int}):
         if p.split()[-1] == _src and len(list(set(p.split()))) >= _n:
             return p, cur_choices[p]
         dic = {
-            f"{p} {x}": (cur_choices[p][0] + _paths[p.split()[-1]][x], cur_choices[p][1] + float(_cities[x])) for x in list(_paths[p.split()[-1]].keys())
+            f"{p} {x}": (cur_choices[p][0] + _paths[p.split()[-1]][x], cur_choices[p][1] + float(_cities[x])) for x in
+            list(_paths[p.split()[-1]].keys())
         }
         cur_choices = {**cur_choices, **dic}
         cur_choices.pop(p)
@@ -24,14 +25,14 @@ def economic_tour_func(_n: int, _paths: {str: dict}, _cities: {str: int}):
     for _src in _paths:
         cur_choices = {f"{_src} {x}": (_paths[_src][x], 0.0) for x in list(_paths[_src].keys())}
         while True:
-            # ic(cur_choices)
+            #             ic(cur_choices)
             cheapest = list(cur_choices.keys())[0]
             for ch in cur_choices:
                 if cur_choices[ch] < cur_choices[cheapest]:
                     cheapest = ch
             found_path, weight = goto(cheapest)
             if found_path:
-                # ic(found_path)
+                #                 ic(found_path)
                 return found_path, weight
 
 
@@ -50,7 +51,7 @@ def check_hamilton(_paths: {str: dict}):
             f"{p} {x}" for x in list(_paths[p.split()[-1]].keys()) if x not in p.split()
         ]
         cur_choices.remove(p)
-        # ic(cur_choices)
+        #         ic(cur_choices)
         if p.split()[-1] == _src and set(all_cts) == set(visited_cts_in_p):
             return "has_circuit"
         elif set(all_cts) == set(visited_cts_in_p):
@@ -63,8 +64,8 @@ def check_hamilton(_paths: {str: dict}):
         while True:
             if not cur_choices:
                 return ret["has_path"], ret["has_circuit"]
-            # ic(cur_choices)
-            # ic(ret)
+            #             ic(cur_choices)
+            #             ic(ret)
             cur_choice = cur_choices[0]
             # for ch in cur_choices:
             #     if cur_choices[ch] < cur_choices[cur_choice]:
@@ -91,11 +92,11 @@ def tour_func(_src: str, _paths: {str: dict}):
         }
         cur_choices = {**cur_choices, **dic}
         cur_choices.pop(p)
-        # ic(cur_choices)
+        #         ic(cur_choices)
         return None, None
 
     cur_choices = {f"{_src} {x}": _paths[_src][x] for x in list(_paths[_src].keys())}
-    # ic(cur_choices)
+    #     ic(cur_choices)
     # cur_position = _src
     while True:
         # ic(cur_choices)
@@ -105,12 +106,11 @@ def tour_func(_src: str, _paths: {str: dict}):
                 cheapest = ch
         found_path, weight = goto(cheapest)
         if found_path:
-            # ic(found_path)
+            #             ic(found_path)
             return found_path, weight
 
 
 def shortestpath_func(_src: str, _dst: str, _paths: {str: dict}):
-    ic(_src, _dst, _paths)
     def goto(p: str):
         """
         check if the last parameter of the given path is the dst
@@ -128,11 +128,11 @@ def shortestpath_func(_src: str, _dst: str, _paths: {str: dict}):
         }
         cur_choices = {**cur_choices, **dic}
         cur_choices.pop(p)
-        # ic(cur_choices)
+        #         ic(cur_choices)
         return None, None
 
     cur_choices = {f"{_src} {x}": _paths[_src][x] for x in list(_paths[_src].keys())}
-    # ic(cur_choices)
+    #     ic(cur_choices)
     # cur_position = _src
     while True:
         cheapest = list(cur_choices.keys())[0]
@@ -141,7 +141,7 @@ def shortestpath_func(_src: str, _dst: str, _paths: {str: dict}):
                 cheapest = ch
         found_path, weight = goto(cheapest)
         if found_path:
-            # ic(found_path)
+            #             ic(found_path)
             return found_path, weight
 
 
@@ -173,7 +173,7 @@ def euler_func(_paths: {str: dict}):
             if {x, y} not in all_edges:
                 all_edges.append({x, y})
 
-    # ic(all_edges)
+    #     ic(all_edges)
 
     found_path = []
     for _src in _paths:
@@ -182,9 +182,9 @@ def euler_func(_paths: {str: dict}):
         visited = []
 
         while True:
-            # ic(cur_path)
-            # ic(visited)
-            # ic([x for x in all_edges if x not in cur_path])
+            #             ic(cur_path)
+            #             ic(visited)
+            #             ic([x for x in all_edges if x not in cur_path])
             choices = [x for x in _paths[cur_vertex].keys() if {cur_vertex, x} not in visited]
             if [x for x in all_edges if x not in cur_path]:  # no path/circuit found yet
                 if not choices:  # no valid choice to choose
@@ -201,7 +201,7 @@ def euler_func(_paths: {str: dict}):
                     found_path = cur_path
                     break
 
-    # ic(found_path)
+    #     ic(found_path)
     if found_path:
         for v in found_path[0]:
             if v not in found_path[1] and v in found_path[-1]:
@@ -247,8 +247,8 @@ def main():
             relations[_id] = raw_city
             _id += 1
 
-    ic(cities)
-    ic(relations)
+    #     ic(cities)
+    #     ic(relations)
     rev_relations = {relations[x]: x for x in relations}
 
     num_of_paths = int(input())
@@ -274,7 +274,7 @@ def main():
                 paths[src] = {}
             paths[src][dst] = int(inp[3])
 
-    ic(paths)
+    #     ic(paths)
 
     num_of_commands = int(input())
     for i in range(num_of_commands):
