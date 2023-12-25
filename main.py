@@ -1,4 +1,4 @@
-from icecream import ic
+# from icecream import ic
 
 
 def economic_tour_func(_n: int, _paths: {str: dict}, _cities: {str: int}):
