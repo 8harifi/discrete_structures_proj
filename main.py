@@ -280,8 +280,8 @@ def main():
     for i in range(num_of_commands):
         cmd = input()
         if cmd == "NUMOFPATH":
-            print("NUMOFPATH")
             c1, c2 = input().split()
+            print("NUMOFPATH")
             print(
                 numofpath_func(
                     relations[int(c1)],
@@ -313,8 +313,8 @@ def main():
                     print(" ".join([str(rev_relations[x]) for x in p]))
 
         elif cmd == "SHORTESTPATH":
-            print("SHORTESTPATH")
             ct1, ct2 = input().split()
+            print("SHORTESTPATH")
             res, weight = shortestpath_func(ct1, ct2, paths)
             print(weight)
             print(" ".join([str(rev_relations[x]) for x in res.split()]))
@@ -324,16 +324,18 @@ def main():
             res = f"{'Yes' if has_path else 'No'} {'Yes' if has_circuit else 'No'}"
             print(res)
         elif cmd == "TOUR":
-            print("TOUR")
             ct = relations[int(input())]
+            print("TOUR")
             res, weight = tour_func(ct, paths)
             print(weight)
             print(" ".join([str(rev_relations[x]) for x in res.split()]))
         elif cmd == "ECONOMIC_TOUR":
-            print("ECONOMIC_TOUR")
             res, weight = economic_tour_func(int(input()), paths, cities)
+            print("ECONOMIC_TOUR")
             print(f"{weight[0]} {int(weight[1])}")
             print(" ".join([str(rev_relations[x]) for x in res.split()]))
+        else:
+            print("NOT APPLICABLE")
 
 
 if __name__ == "__main__":
